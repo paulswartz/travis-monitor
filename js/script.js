@@ -14,7 +14,7 @@ $(document).ready(function () {
             'last_build_status': -1,
         },
         loadFromTravis: function(args) {
-            obj = this;
+            var obj = this;
             $.getJSON(travisURL(this.get('slug')), args).success(function(data){
                 obj.save(data);
             });
@@ -23,6 +23,12 @@ $(document).ready(function () {
     
     var ProjectList = Backbone.Collection.extend({
         model: Project,
+        localStorage: new Store("travis-projects"),
+        update: function() {
+            this.each(function(project) {
+                project.loadFromTravis.call(project);
+            });
+        }
     });
     
     var Projects = new ProjectList;
@@ -30,20 +36,23 @@ $(document).ready(function () {
     var ProjectView = Backbone.View.extend({
         tagName: 'tr',
         template: _.template($('#project-row').html()),
+        events: {
+            'click .delete': 'clear',
+        },
         initialize: function() {
-            _.bindAll(this, 'render');
+            _.bindAll(this, 'render', 'clear', 'remove');
             this.model.bind('change', this.render);
+            this.model.bind('destroy', this.remove);
+
         },
         render: function() {
             this.$el.html(this.template(this.model.toJSON())).addClass('project').addClass(
                 this.model.get('last_build_status') ? 'red': 'green');
             return this;
         },
-        update: function() {
-            this.each(function() {
-                this.loadFromTravis();
-            });
-        }
+        clear: function() {
+            this.model.destroy();
+        },
     });
     
     var TravisMonitorView = Backbone.View.extend({
@@ -56,6 +65,8 @@ $(document).ready(function () {
             Projects.bind('add', this.addProject);
             Projects.bind('reset', this.addAll);
             this.input = $("#new-project");
+            Projects.fetch()
+            Projects.update();
         },
         addProject: function (project) {
             var view = new ProjectView({model: project});
@@ -73,21 +84,11 @@ $(document).ready(function () {
                 this.input.val('');
                 project.loadFromTravis({async: false});
                 Projects.add([project]);
-
             }
         },
     });
     
-    Backbone.sync = function(method, model) {
-        alert(method + ": " + JSON.stringify(model));
-    };
-    
     var app = new TravisMonitorView;
-    
-    p = new Project({
-        'slug': 'paulswartz/miller'
-    });
-    
 });
 
 

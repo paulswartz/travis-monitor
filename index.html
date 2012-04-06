@@ -89,7 +89,9 @@
 <script type="text/template" id="project-row">
   <td class="project"><strong><%= slug %><strong></td>
   <td class="status"><%= last_build_status ? 'Failed' : 'Success' %></td>
-  <td class="trend"></td>
+  <td class="trend">
+    <button class="btn btn-small btn-danger delete">delete</button>
+  </td>
 </script>
 
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
@@ -98,6 +100,7 @@
 <script src="js/libs/bootstrap/bootstrap.min.js"></script>
 <script src="js/libs/underscore-min.js"></script>
 <script src="js/libs/backbone-min.js"></script>
+<script src="js/libs/backbone-localstorage.js"></script>
 <script src="js/script.js"></script>
 <!-- <script> -->
 <!-- 	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']]; -->
