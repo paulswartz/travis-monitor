@@ -1,18 +1,12 @@
 
 
 /* ===== Primary Styles ========================================================
-   Author:
+   Author: Paul Swartz
    ========================================================================== */
 
-
-
-
-
-
-
-
-
-
-
-
-
+#projects tr.red td.project {
+    color: red;
+}
+#projects tr.green td.project {
+    color: green;
+}
