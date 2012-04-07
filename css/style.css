@@ -4,9 +4,21 @@
    Author: Paul Swartz
    ========================================================================== */
 
+html.localstorage #local-storage-alert {
+    display: none;
+}
 #projects tr.red td.project {
     color: red;
 }
 #projects tr.green td.project {
     color: green;
+}
+#projects button.delete {
+    display: none;
+}
+#projects tr:hover button.delete {
+    display: block;
+}
+.highlight {
+    background: #ff9;
 }

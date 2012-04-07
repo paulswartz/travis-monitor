@@ -48,6 +48,11 @@
     </div>
 
     <div class="container" id="container">
+      <div class="row" id="local-storage-alert">
+        <div class="span8 alert">
+          Whoops! You don't seem to have localStorage support, which means your repositories won't be saved.
+        </div>
+      </div>
       <div class="row">
         <div class="span8">
           <table class="table" id="projects">
@@ -69,7 +74,7 @@
         </div>
       </div>
 
-      <div class="row" name="about">
+      <div class="row highlightable" id="about">
         <div class="span4">
           <h3>What is this?</h3>
           <p><ahref="http://travis-ci.org">Travis-CI</a> is a great project which gives open-source projects a public continous-integration system.  However, if you've got a lot of projects you're trying to keep an eye on, it can be a bit difficult within the Travis-CI interface.  Travis Monitor is a quick way for you to keep an eye on multiple projects from multiple users, all from one place.</p>
@@ -78,7 +83,7 @@
 
       <hr>
 
-      <footer name="contact">
+      <footer class="highlightable" id="contact">
         <p>Written by <a href="http://paulswartz.net">Paul Swartz</a>. Source code available at <a href="http://github.com/paulswartz/travis-monitor">GitHub</a>.</p>
       </footer>
 
@@ -90,7 +95,7 @@
   <td class="project"><strong><%= slug %><strong></td>
   <td class="status"><%= last_build_status ? 'Failed' : 'Success' %></td>
   <td class="trend">
-    <button class="btn btn-small btn-danger delete">delete</button>
+    <button class="btn btn-mini btn-danger delete">delete</button>
   </td>
 </script>
 

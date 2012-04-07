@@ -89,6 +89,12 @@ $(document).ready(function () {
     });
     
     var app = new TravisMonitorView;
+
+    $(location.hash).addClass('highlight');
+    $(window).on('hashchange', function() {
+        $('.highlightable').removeClass('highlight');
+        $(location.hash).addClass('highlight');
+    });
 });
 
 
