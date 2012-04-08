@@ -12,11 +12,19 @@ $(document).ready(function () {
         defaults: {
             'slug': 'blank project',
             'last_build_status': -1,
+            'builds': {},
         },
         loadFromTravis: function(args) {
             var obj = this;
             $.getJSON(travisURL(this.get('slug')), args).success(function(data){
                 obj.save(data);
+            });
+            $.getJSON(travisURL(this.get('slug') + '/builds')).success(function(data) {
+                builds = obj.get('builds') || {}
+                _.each(data, function(build) {
+                    builds[build.id] = build;
+                });
+                obj.save({builds: builds})
             });
         },
     });
