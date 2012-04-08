@@ -58,9 +58,8 @@
           <table class="table" id="projects">
             <tr>
               <th>Project</th>
-              <th>Status</th>
               <th>Trend</th>
-              <th></th>
+              <th class="delete-column"></th>
             </tr>
             <tr id="no-projects">
               <td colspan=3>No projects added!</td>
@@ -93,8 +92,9 @@
 <!-- Templates -->
 
 <script type="text/template" id="project-row">
-  <td class="project"><strong><%= slug %><strong></td>
-  <td class="status"><%= last_build_status ? 'Failed' : 'Success' %></td>
+  <td class="project">
+    <strong><%= slug %></strong>
+  </td>
   <td class="trend">
     <span class="sparkline">Loading..</span>
   </td>

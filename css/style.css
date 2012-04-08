@@ -7,10 +7,13 @@
 html.localstorage #local-storage-alert {
     display: none;
 }
-#projects tr.red td.project {
+#projects th.delete-column {
+    width: 2em;
+}
+#projects tr.red td.project strong {
     color: red;
 }
-#projects tr.green td.project {
+#projects tr.green td.project strong {
     color: green;
 }
 #projects button.delete {
