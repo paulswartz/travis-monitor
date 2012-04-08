@@ -3,18 +3,29 @@
 /* ===== Primary Styles ========================================================
    Author: Paul Swartz
    ========================================================================== */
-
 html.localstorage #local-storage-alert {
     display: none;
 }
 #projects th.delete-column {
     width: 2em;
 }
-#projects tr.red td.project strong {
+#projects tr.red td.project strong,
+#projects td.project .branches li.red {
     color: red;
 }
-#projects tr.green td.project strong {
+#projects tr.green td.project strong,
+#projects td.project .branches li.green {
     color: green;
+}
+#projects .branches li {
+    margin: 5px 0;
+}
+#projects .branches li .sparkline {
+    padding-left: 10px;
+}
+#projects ul {
+    list-style: none;
+    margin-left: 0;
 }
 #projects button.delete {
     display: none;

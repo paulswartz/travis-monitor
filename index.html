@@ -94,14 +94,21 @@
 <script type="text/template" id="project-row">
   <td class="project">
     <strong><%= slug %></strong>
+    <ul class="branches" />
   </td>
   <td class="trend">
     <span class="sparkline">Loading..</span>
+    <ul class="branches" />
   </td>
   <td>
     <button class="btn btn-mini btn-danger delete">x</button>
   </td>
 </script>
+<script type="text/template" id="branch-project-row">
+  <%= branch %>
+  <span class="sparkline">Loading..</span>
+</script>
+
 
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
