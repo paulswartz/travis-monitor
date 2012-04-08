@@ -12,21 +12,35 @@ $(document).ready(function () {
         defaults: {
             'slug': 'blank project',
             'last_build_status': -1,
-            'builds': {},
+            'builds': null,
         },
-        loadFromTravis: function(args) {
-            var obj = this;
-            $.getJSON(travisURL(this.get('slug')), args).success(function(data){
-                obj.save(data);
-            });
-            $.getJSON(travisURL(this.get('slug') + '/builds')).success(function(data) {
-                builds = obj.get('builds') || {}
+        _travisJSON: function(extra, success) {
+            var url = travisURL(this.get('slug') + extra);
+            var that = this;
+            function wrapper(data) {
+                return success.call(that, data);
+            }
+            return $.getJSON(url, wrapper);
+        },
+        loadFromTravis: function() {
+            xhr = this._travisJSON('', this.save);
+            this._travisJSON('/builds', function(data) {
+                builds = this.get('builds') || {};
                 _.each(data, function(build) {
                     builds[build.id] = build;
                 });
-                obj.save({builds: builds})
+                this.save({builds: builds,
+                          num_builds: _.size(builds)});
             });
+            return xhr;
         },
+        trendData: function() {
+            return _.chain(this.get('builds')).values().sortBy(function(build) {
+                return build.id;
+            }).last(10).map(function(build) {
+                return build.result ? -1 : 1;
+            }).value();
+        }
     });
     
     var ProjectList = Backbone.Collection.extend({
@@ -56,6 +70,12 @@ $(document).ready(function () {
         render: function() {
             this.$el.html(this.template(this.model.toJSON())).addClass('project').addClass(
                 this.model.get('last_build_status') ? 'red': 'green');
+            var trendData = this.model.trendData();
+            this.$el.find('.sparkline').sparkline(
+                this.model.trendData(),
+                {type: 'tristate',
+                posBarColor: "green",
+                negBarColor: "red"});
             return this;
         },
         clear: function() {
@@ -80,6 +100,7 @@ $(document).ready(function () {
             var view = new ProjectView({model: project});
             $("#no-projects").hide();
             $("#projects").append(view.render().el);
+            $.sparkline_display_visible();
         },
         addAll: function() {
             Projects.each(this.addProject);
@@ -89,9 +110,11 @@ $(document).ready(function () {
                 var project = new Project({
                     'slug': this.input.val(),
                 });
+                project.collection = Projects;
                 this.input.val('');
-                project.loadFromTravis({async: false});
-                Projects.add([project]);
+                project.loadFromTravis().success(function() {
+                    Projects.add([project]);
+                });
             }
         },
     });
