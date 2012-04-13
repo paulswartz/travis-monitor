@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Travis Monitor Test Suite</title>
+
+  <!-- jquery -->
+  <script src="../js/libs/jquery-1.7.2.min.js"></script>
+
+  <!-- qunit -->
+  <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
+  <script src="qunit.js"></script>
+
+  <!--  plugin sources -->
+  <script src="../js/libs/jquery.sparkline.min.js"></script>
+  <script src="../js/libs/bootstrap/bootstrap.min.js"></script>
+  <script src="../js/libs/underscore-min.js"></script>
+  <script src="../js/libs/backbone-min.js"></script>
+  <script src="../js/libs/backbone-localstorage.js"></script>
+  <script src="../js/script.js"></script>
+
+  <!-- unit tests -->
+  <script src="unit/project-model.js"></script>
+  <script src="unit/project-list.js"></script>
+  <script src="unit/project-view.js"></script>
+  <script src="unit/monitor-view.js"></script>
+</head>
+<body>
+  <div>
+    <h1 id="qunit-header">Travis Monitor Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture"></div>
+  </div>
+
+<script type="text/template" id="project-row">
+  <td class="project">
+    <strong><%= slug %></strong>
+    <ul class="branches" />
+  </td>
+  <td class="trend">
+    <span class="sparkline">Loading..</span>
+    <ul class="branches" />
+  </td>
+  <td>
+    <button class="delete">x</button>
+  </td>
+</script>
+
+<script type="text/template" id="branch-project-row">
+  <%= branch %>
+  <span class="sparkline">Loading..</span>
+</script>
+
+</body>
+</html>

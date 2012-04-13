@@ -4,10 +4,19 @@
 
 
 $(document).ready(function () {
+
+    var storePrefix = "travis-";
+    var urlPrefix = "http://travis-ci.org/";
+    var urlSuffix = ".json?callback=?";
+    if (typeof QUnit !== 'undefined') {
+        storePrefix = "qunit-";
+        urlPrefix = "data/";
+        urlSuffix = '.json';
+    }
     function travisURL(middle) {
-        return 'http://travis-ci.org/' + middle + '.json?callback=?';
+        return urlPrefix + middle + urlSuffix;
     };
-    
+
     var Project = Backbone.Model.extend({
         defaults: {
             'slug': 'blank project',
@@ -53,19 +62,19 @@ $(document).ready(function () {
             }).value();
         }
     });
-                                        
+
     var ProjectList = Backbone.Collection.extend({
         model: Project,
-        localStorage: new Store("travis-projects"),
+        localStorage: new Store(storePrefix + "projects"),
         update: function() {
             this.each(function(project) {
                 project.loadFromTravis(project);
             });
         }
     });
-    
+
     var Projects = new ProjectList;
-    
+
     var ProjectView = Backbone.View.extend({
         tagName: 'tr',
         template: _.template($('#project-row').html()),
@@ -109,7 +118,6 @@ $(document).ready(function () {
         },
         toggleBranches: function() {
             this.$el.find('.branches').toggle();
-            console.log(this.$el.find('.branches'));
             $.sparkline_display_visible();
         },
         clear: function() {
@@ -122,37 +130,47 @@ $(document).ready(function () {
         events: {
             'keypress #new-project': 'addOnEnter',
         },
+        model: Project,
+        view: ProjectView,
+        collection: Projects,
         initialize: function () {
-            _.bindAll(this, 'addProject', 'addAll', 'addOnEnter');
-            Projects.bind('add', this.addProject);
-            Projects.bind('reset', this.addAll);
+            _.bindAll(this, 'addProject', 'addAll', 'adjustCount', 'addOnEnter');
+            this.collection.bind('add', this.addProject);
+            this.collection.bind('remove', this.adjustCount);
+            this.collection.bind('reset', this.addAll);
             this.input = $("#new-project");
-            Projects.fetch()
-            Projects.update();
+            this.collection.fetch()
+            this.collection.update();
         },
         addProject: function (project) {
-            var view = new ProjectView({model: project});
+            var view = new this.view({model: project});
             $("#no-projects").hide();
             $("#projects").append(view.render().el);
             $.sparkline_display_visible();
         },
         addAll: function() {
-            Projects.each(this.addProject);
+            this.adjustCount(),
+            this.collection.each(this.addProject);
+        },
+        adjustCount: function() {
+            if (!this.collection.length) {
+                $("#no-projects").show();
+            }
         },
         addOnEnter: function(e) {
             if (e.keyCode === 13) {
-                var project = new Project({
+                var project = new this.model({
                     'slug': this.input.val(),
                 });
-                project.collection = Projects;
+                project.collection = this.collection;
                 this.input.val('');
-                project.loadFromTravis().success(function() {
-                    Projects.add(project);
+                return project.loadFromTravis().success(function() {
+                    project.collection.add([project]);
                 });
             }
         },
     });
-    
+
     var app = new TravisMonitorView;
 
     $(location.hash).addClass('highlight');
@@ -160,6 +178,11 @@ $(document).ready(function () {
         $('.highlightable').removeClass('highlight');
         $(location.hash).addClass('highlight');
     });
+
+    window.Project = Project;
+    window.ProjectList = ProjectList;
+    window.ProjectView = ProjectView;
+    window.TravisMonitorView = TravisMonitorView;
 });
 
 
