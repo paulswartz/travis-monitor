@@ -3,41 +3,25 @@
 
 
 /* TEAM */
-  <your title>: <your name>
-  Site:
-  Twitter:
-  Location:
-
-/* THANKS */
-  Names (& URL):
+  Paul Swartz
+  Site: http://paulswartz.net/
+  Twitter: @paulswartz
+  Location: Northampton, MA
 
 /* SITE */
   Standards: HTML5, CSS3
-  Components: Modernizr, jQuery
-  Software:
+  Components: Modernizr, jQuery, Underscore, Bootstrap, Backbone, QUnit
 
 
 
-                               -o/-
-                               +oo//-
-                              :ooo+//:
-                             -ooooo///-
-                             /oooooo//:
-                            :ooooooo+//-
-                           -+oooooooo///-
-           -://////////////+oooooooooo++////////////::
-            :+ooooooooooooooooooooooooooooooooooooo+:::-
-              -/+ooooooooooooooooooooooooooooooo+/::////:-
-                -:+oooooooooooooooooooooooooooo/::///////:-
-                  --/+ooooooooooooooooooooo+::://////:-
-                     -:+ooooooooooooooooo+:://////:--
-                       /ooooooooooooooooo+//////:-
-                      -ooooooooooooooooooo////-
-                      /ooooooooo+oooooooooo//:
-                     :ooooooo+/::/+oooooooo+//-
-                    -oooooo/::///////+oooooo///-
-                    /ooo+::://////:---:/+oooo//:
-                   -o+/::///////:-      -:/+o+//-
-                   :-:///////:-            -:/://
-                     -////:-                 --//:
-                       --                       -:
+                  ___     
+      ___        /__/\    
+     /  /\      |  |::\   
+    /  /:/      |  |:|:\  
+   /  /:/     __|__|:|\:\ 
+  /  /::\    /__/::::| \:\
+ /__/:/\:\   \  \:\~~\__\/
+ \__\/  \:\   \  \:\      
+      \  \:\   \  \:\     
+       \__\/    \  \:\    
+                 \__\/    
