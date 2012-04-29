@@ -1,13 +1,14 @@
 /* Author: Paul Swartz <http://paulswartz.net/.
 
 */
+/*jslint browser: true, vars: true, nomen: true, white: true */
+/*global $: false, QUnit: false, Backbone: false, "_": false, Store: false */
 
-
-$(document).ready(function() {
-
-    var storePrefix = 'travis-';
-    var urlPrefix = 'http://travis-ci.org/';
-    var urlSuffix = '.json?callback=?';
+$(document).ready(function () {
+    "use strict";
+    var storePrefix = 'travis',
+        urlPrefix = 'http://travis-ci.org',
+        urlSuffix = '.json?callback=?';
     if (typeof QUnit !== 'undefined') {
         storePrefix = 'qunit-';
         urlPrefix = 'data/';
@@ -15,7 +16,7 @@ $(document).ready(function() {
     }
     function travisURL(middle) {
         return urlPrefix + middle + urlSuffix;
-    };
+    }
 
     var Project = Backbone.Model.extend({
         defaults: {
@@ -24,7 +25,7 @@ $(document).ready(function() {
             'builds': null,
             'branches': null
         },
-        _travisJSON: function(extra, success) {
+        _travisJSON: function (extra, success) {
             var url = travisURL(this.get('slug') + extra);
             var that = this;
             function wrapper(data) {
@@ -32,13 +33,13 @@ $(document).ready(function() {
             }
             return $.getJSON(url, wrapper);
         },
-        loadFromTravis: function() {
-            xhr = this._travisJSON('', this.save);
-            this._travisJSON('/builds', function(data) {
-                builds = this.get('builds') || {};
-                branches = this.get('branches') || {};
-                _.each(data, function(build) {
-                    branch_builds = branches[build.branch] || {};
+        loadFromTravis: function () {
+            var xhr = this._travisJSON('', this.save);
+            this._travisJSON('/builds', function (data) {
+                var builds = this.get('builds') || {},
+                    branches = this.get('branches') || {};
+                _.each(data, function (build) {
+                    var branch_builds = branches[build.branch] || {};
                     branch_builds[build.id] = builds[build.id] = build;
                     branches[build.branch] = branch_builds;
                 });
@@ -48,13 +49,13 @@ $(document).ready(function() {
             });
             return xhr;
         },
-        trendData: function(branch) {
+        trendData: function (branch) {
             return _.chain(this.lastBuild(branch, 10)).map(
-                function(build) {
+                function (build) {
                     return build.result ? -1 : 1;
                 }).value();
         },
-        lastBuild: function(branch, count) {
+        lastBuild: function (branch, count) {
             if (typeof count === 'undefined') {
                 count = 1;
             }
@@ -64,28 +65,24 @@ $(document).ready(function() {
             } else {
                 builds = this.get('branches')[branch];
             }
-            var last = _.chain(builds).values().sortBy(function(build) {
+            var last = _.chain(builds).values().sortBy(function (build) {
                 return build.id;
             }).last(count).value();
-            if (count === 1) {
-                return last[0];
-            } else {
-                return last;
-            }
+            return (count === 1) ?  last[0] : last;
         }
     });
 
     var ProjectList = Backbone.Collection.extend({
         model: Project,
         localStorage: new Store(storePrefix + 'projects'),
-        update: function() {
-            this.each(function(project) {
+        update: function () {
+            this.each(function (project) {
                 project.loadFromTravis(project);
             });
         }
     });
 
-    var Projects = new ProjectList;
+    var Projects = new ProjectList();
 
     var ProjectView = Backbone.View.extend({
         tagName: 'tr',
@@ -95,21 +92,21 @@ $(document).ready(function() {
             'click .delete': 'clear',
             'click': 'toggleBranches'
         },
-        initialize: function() {
+        initialize: function () {
             _.bindAll(this, 'render', 'clear', 'remove', 'toggleBranches');
             this.model.bind('change', this.render);
             this.model.bind('destroy', this.remove);
 
         },
-        render: function() {
+        render: function () {
             this.$el.html(this.template(this.model.toJSON())).addClass(
                 'project').addClass(
                     this.model.get('last_build_status') ? 'red' : 'green');
             var sparklineOptions = {
                 type: 'tristate',
                 posBarColor: 'green',
-                negBarColor: 'red'};
-            var trendData = this.model.trendData();
+                negBarColor: 'red'
+            };
             this.$('.sparkline').sparkline(
                 this.model.trendData(),
                 sparklineOptions);
@@ -118,16 +115,15 @@ $(document).ready(function() {
             var branches = this.model.get('branches');
             if (branches !== null) {
                 var projectTemplate = this.branchProjectTemplate;
-                var sparklineTemplate = this.branchSparklineTemplate;
                 _.chain(branches).keys().each(function(branch) {
-                    branchTrend = model.trendData(branch);
-                    build = model.lastBuild(branch);
-                    el = $('<li/>').html(projectTemplate({
-                        'branch': branch,
-                        'build': build,
-                        'slug': model.get('slug')}));
+                    var branchTrend = model.trendData(branch),
+                        build = model.lastBuild(branch),
+                        el = $('<li/>').html(projectTemplate({
+                            'branch': branch,
+                            'build': build,
+                            'slug': model.get('slug')}));
                     el.addClass(
-                        _.last(branchTrend) == 1 ? 'green' : 'red').appendTo(
+                        _.last(branchTrend) === 1 ? 'green' : 'red').appendTo(
                             branch_list).children('.sparkline').sparkline(
                             branchTrend,
                             sparklineOptions);
@@ -172,7 +168,7 @@ $(document).ready(function() {
             $.sparkline_display_visible();
         },
         addAll: function() {
-            this.adjustCount(),
+            this.adjustCount();
             this.collection.each(this.addProject);
         },
         adjustCount: function() {
@@ -194,7 +190,8 @@ $(document).ready(function() {
         }
     });
 
-    var app = new TravisMonitorView;
+    /* Start everything running. */
+    var app = new TravisMonitorView();
 
     $(location.hash).addClass('highlight');
     $(window).on('hashchange', function() {
@@ -206,6 +203,7 @@ $(document).ready(function() {
     window.ProjectList = ProjectList;
     window.ProjectView = ProjectView;
     window.TravisMonitorView = TravisMonitorView;
+    window.TravisApp = app;
 });
 
 
