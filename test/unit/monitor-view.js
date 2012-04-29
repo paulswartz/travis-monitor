@@ -52,17 +52,18 @@ test("No projects", 3, function () {
     ok($("#no-projects:visible").length, "No projects ID visible");
 });
 
-test('refresh', 3, function() {
+test('refresh', 5, function() {
     var project = this.collection.create({
         slug: 'rails/rails'
     });
     var that = this;
     equal(project.get('builds'), null, 'no builds to start');
-    project.on('change:num_builds', function () {
+    project.on('change:last_updated', function () {
         start();
         equal(project.get('num_builds'), 25, 'loaded some builds after click');
+        equal($('#refresh').text(), 'Refresh', 'button text updated on end');
         equal(that.app.refresh(), false, 'refresh function stops event handling');
     });
-    $('#refresh').click();
+    equal($('#refresh').click().text(), 'Refreshing...', 'button text updated on start');
     stop();
 });

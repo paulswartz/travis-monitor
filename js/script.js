@@ -21,6 +21,7 @@ $(document).ready(function () {
     var Project = Backbone.Model.extend({
         defaults: {
             'slug': 'blank project',
+            'last_updated': null,
             'last_build_status': -1,
             'builds': null,
             'branches': null
@@ -45,7 +46,9 @@ $(document).ready(function () {
                 });
                 this.save({builds: builds,
                            branches: branches,
-                           num_builds: _.size(builds)});
+                           num_builds: _.size(builds),
+                           last_updated: new Date()
+                          });
             });
             return xhr;
         },
@@ -96,7 +99,6 @@ $(document).ready(function () {
             _.bindAll(this, 'render', 'clear', 'remove', 'toggleBranches');
             this.model.bind('change', this.render);
             this.model.bind('destroy', this.remove);
-
         },
         render: function () {
             this.$el.html(this.template(this.model.toJSON())).addClass(
@@ -154,10 +156,11 @@ $(document).ready(function () {
         collection: Projects,
         initialize: function() {
             _.bindAll(this, 'addProject', 'addAll', 'adjustCount',
-                      'addOnEnter', 'refresh');
+                      'addOnEnter', 'refresh', 'finishRefresh');
             this.collection.bind('add', this.addProject);
             this.collection.bind('remove', this.adjustCount);
             this.collection.bind('reset', this.addAll);
+            this.collection.bind('change:last_updated', this.finishRefresh);
             this.input = $('#new-project');
             this.collection.fetch();
             this.collection.update();
@@ -189,10 +192,12 @@ $(document).ready(function () {
                 });
             }
         },
+        finishRefresh: function () {
+            $("#refresh").text('Refresh');
+        },
         refresh: function (e) {
-            this.collection.each(function(project) {
-                project.loadFromTravis();
-            });
+            $('#refresh').text('Refreshing...');
+            this.collection.update();
             if (typeof e !== 'undefined') {
                 e.preventDefault();
             }

@@ -6,12 +6,13 @@ module("Project Model", {
     }
 });
 
-test("defaults", 4, function() {
+test("defaults", 5, function() {
     var project = new Project();
     equal(project.get('slug'), 'blank project', "slug default");
     equal(project.get('last_build_status', "build status default"), -1);
     equal(project.get('builds'), null, "builds default");
     equal(project.get('branches'), null, "branches default");
+    equal(project.get('last_updated'), null, 'last_updated default');
 });
 
 test("_travisJSON", 2, function() {
@@ -29,7 +30,7 @@ test("_travisJSON", 2, function() {
     });
 });
 
-test("loadFromTravis", 3, function() {
+test("loadFromTravis", 4, function() {
     var project = new Project({slug: 'rails/rails'});
     project.collection = this.collection;
     stop(2)
@@ -46,6 +47,7 @@ test("loadFromTravis", 3, function() {
         equal(first_build['repository_id'], 891, "loaded a build");
         equal(project.get('branches')[first_build.branch][first_build.id]['id'], first_build.id,
               "loaded build into branches");
+        ok(project.get('last_updated'), 'last_updated set');
     });
 });
 
