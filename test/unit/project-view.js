@@ -58,7 +58,7 @@ test("delete event", 2, function() {
     equal(this.collection.length, 0, "click removed object");
 });
 
-test("toggle event", 3, function() {
+test("toggle event", 4, function() {
     this.view.render().$el.appendTo($("#qunit-fixture"));
     this.view.$el.click();
     equal(this.view.$el.find(".branches li:visible").length, 2, "branches are visible");
@@ -66,4 +66,8 @@ test("toggle event", 3, function() {
     this.view.$el.click();
     equal(this.view.$el.find(".branches li:visible").length, 0,
           "branches are hidden");
+    this.view.$el.find('a').click();
+    equal(this.view.$el.find(".branches li:visible").length, 0,
+          "branches are hidden after a link is clicked");
+
 });

@@ -135,7 +135,10 @@ $(document).ready(function() {
             }
             return this;
         },
-        toggleBranches: function() {
+        toggleBranches: function(e) {
+            if (typeof e !== 'undefined' && e.target.nodeName === 'A') {
+                return;
+            }
             this.$el.find('.branches').toggle();
             $.sparkline_display_visible();
         },
