@@ -1,4 +1,5 @@
-# Travis Monitor #
+
+# Travis Monitor [![Build Status](https://secure.travis-ci.org/paulswartz/travis-monitor.png)](http://travis-ci.org/paulswartz/travis-monitor)#
 
 ## About ##
 
