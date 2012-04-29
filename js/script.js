@@ -3,14 +3,14 @@
 */
 
 
-$(document).ready(function () {
+$(document).ready(function() {
 
-    var storePrefix = "travis-";
-    var urlPrefix = "http://travis-ci.org/";
-    var urlSuffix = ".json?callback=?";
+    var storePrefix = 'travis-';
+    var urlPrefix = 'http://travis-ci.org/';
+    var urlSuffix = '.json?callback=?';
     if (typeof QUnit !== 'undefined') {
-        storePrefix = "qunit-";
-        urlPrefix = "data/";
+        storePrefix = 'qunit-';
+        urlPrefix = 'data/';
         urlSuffix = '.json';
     }
     function travisURL(middle) {
@@ -22,7 +22,7 @@ $(document).ready(function () {
             'slug': 'blank project',
             'last_build_status': -1,
             'builds': null,
-            'branches': null,
+            'branches': null
         },
         _travisJSON: function(extra, success) {
             var url = travisURL(this.get('slug') + extra);
@@ -65,7 +65,7 @@ $(document).ready(function () {
 
     var ProjectList = Backbone.Collection.extend({
         model: Project,
-        localStorage: new Store(storePrefix + "projects"),
+        localStorage: new Store(storePrefix + 'projects'),
         update: function() {
             this.each(function(project) {
                 project.loadFromTravis(project);
@@ -78,10 +78,10 @@ $(document).ready(function () {
     var ProjectView = Backbone.View.extend({
         tagName: 'tr',
         template: _.template($('#project-row').html()),
-        branchProjectTemplate: _.template($("#branch-project-row").html()),
+        branchProjectTemplate: _.template($('#branch-project-row').html()),
         events: {
             'click .delete': 'clear',
-            'click': 'toggleBranches',
+            'click': 'toggleBranches'
         },
         initialize: function() {
             _.bindAll(this, 'render', 'clear', 'remove', 'toggleBranches');
@@ -90,12 +90,13 @@ $(document).ready(function () {
 
         },
         render: function() {
-            this.$el.html(this.template(this.model.toJSON())).addClass('project').addClass(
-                this.model.get('last_build_status') ? 'red': 'green');
+            this.$el.html(this.template(this.model.toJSON())).addClass(
+                'project').addClass(
+                    this.model.get('last_build_status') ? 'red' : 'green');
             var sparklineOptions = {
                 type: 'tristate',
-                posBarColor: "green",
-                negBarColor: "red"};
+                posBarColor: 'green',
+                negBarColor: 'red'};
             var trendData = this.model.trendData();
             this.$('.sparkline').sparkline(
                 this.model.trendData(),
@@ -106,10 +107,14 @@ $(document).ready(function () {
             if (branches !== null) {
                 var projectTemplate = this.branchProjectTemplate;
                 var sparklineTemplate = this.branchSparklineTemplate;
-                _.chain(branches).keys().each(function (branch) {
+                _.chain(branches).keys().each(function(branch) {
                     branchTrend = model.trendData(branch);
-                    $("<li/>").html(projectTemplate({'branch': branch})).addClass(
-                        _.last(branchTrend) == 1 ? 'green' : 'red').appendTo(branch_list).children('.sparkline').sparkline(
+                    el = $('<li/>').html(projectTemplate({
+                        'branch': branch,
+                        'slug': model.get('slug')}));
+                    el.addClass(
+                        _.last(branchTrend) == 1 ? 'green' : 'red').appendTo(
+                            branch_list).children('.sparkline').sparkline(
                             branchTrend,
                             sparklineOptions);
                 });
@@ -122,30 +127,31 @@ $(document).ready(function () {
         },
         clear: function() {
             this.model.destroy();
-        },
+        }
     });
 
     var TravisMonitorView = Backbone.View.extend({
         el: $('#container'),
         events: {
-            'keypress #new-project': 'addOnEnter',
+            'keypress #new-project': 'addOnEnter'
         },
         model: Project,
         view: ProjectView,
         collection: Projects,
-        initialize: function () {
-            _.bindAll(this, 'addProject', 'addAll', 'adjustCount', 'addOnEnter');
+        initialize: function() {
+            _.bindAll(this, 'addProject', 'addAll', 'adjustCount',
+                      'addOnEnter');
             this.collection.bind('add', this.addProject);
             this.collection.bind('remove', this.adjustCount);
             this.collection.bind('reset', this.addAll);
-            this.input = $("#new-project");
-            this.collection.fetch()
+            this.input = $('#new-project');
+            this.collection.fetch();
             this.collection.update();
         },
-        addProject: function (project) {
+        addProject: function(project) {
             var view = new this.view({model: project});
-            $("#no-projects").hide();
-            $("#projects").append(view.render().el);
+            $('#no-projects').hide();
+            $('#projects').append(view.render().el);
             $.sparkline_display_visible();
         },
         addAll: function() {
@@ -154,13 +160,13 @@ $(document).ready(function () {
         },
         adjustCount: function() {
             if (!this.collection.length) {
-                $("#no-projects").show();
+                $('#no-projects').show();
             }
         },
         addOnEnter: function(e) {
             if (e.keyCode === 13) {
                 var project = new this.model({
-                    'slug': this.input.val(),
+                    'slug': this.input.val()
                 });
                 project.collection = this.collection;
                 this.input.val('');
@@ -168,7 +174,7 @@ $(document).ready(function () {
                     project.collection.add([project]);
                 });
             }
-        },
+        }
     });
 
     var app = new TravisMonitorView;
