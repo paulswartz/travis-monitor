@@ -49,17 +49,29 @@ $(document).ready(function() {
             return xhr;
         },
         trendData: function(branch) {
+            return _.chain(this.lastBuild(branch, 10)).map(
+                function(build) {
+                    return build.result ? -1 : 1;
+                }).value();
+        },
+        lastBuild: function(branch, count) {
+            if (typeof count === 'undefined') {
+                count = 1;
+            }
             var builds = null;
             if (typeof branch === 'undefined') {
                 builds = this.get('builds');
             } else {
                 builds = this.get('branches')[branch];
             }
-            return _.chain(builds).values().sortBy(function(build) {
+            var last = _.chain(builds).values().sortBy(function(build) {
                 return build.id;
-            }).last(10).map(function(build) {
-                return build.result ? -1 : 1;
-            }).value();
+            }).last(count).value();
+            if (count === 1) {
+                return last[0];
+            } else {
+                return last;
+            }
         }
     });
 
@@ -109,8 +121,10 @@ $(document).ready(function() {
                 var sparklineTemplate = this.branchSparklineTemplate;
                 _.chain(branches).keys().each(function(branch) {
                     branchTrend = model.trendData(branch);
+                    build = model.lastBuild(branch);
                     el = $('<li/>').html(projectTemplate({
                         'branch': branch,
+                        'build': build,
                         'slug': model.get('slug')}));
                     el.addClass(
                         _.last(branchTrend) == 1 ? 'green' : 'red').appendTo(

@@ -65,3 +65,21 @@ test("trendData", 3, function() {
     deepEqual(project.trendData('bar'), [-1], "bar branch trend");
 });
 
+test('lastBuild', 3, function() {
+    var project = new Project({
+        builds: {
+            1: {id: 1, result: 1}, // fail
+            2: {id: 2, result: 1}, // fail
+            3: {id: 3, result: 0}, // success
+            4: {id: 4, result: 0}}, // success
+        branches: {
+            'foo': {4: {id: 4, result: 0},
+                    3: {id: 3, result: 0}},
+            'bar': {2: {id: 2, result: 1},
+                    1: {id: 1, result: 1}}}
+    });
+    deepEqual(project.lastBuild(), {id: 4, result: 0}, 'overall last');
+    deepEqual(project.lastBuild('foo'), {id: 4, result: 0}, 'foo branch last');
+    deepEqual(project.lastBuild('bar'), {id: 2, result: 1}, 'bar branch last');
+});
+

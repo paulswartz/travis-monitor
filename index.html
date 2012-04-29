@@ -93,7 +93,7 @@
 
 <script type="text/template" id="project-row">
   <td class="project">
-    <strong><%= slug %></strong>
+    <strong><a href="http://github.com/<%= slug %>"><%= slug %></a></strong>
     <ul class="branches" />
   </td>
   <td class="trend">
@@ -105,7 +105,7 @@
   </td>
 </script>
 <script type="text/template" id="branch-project-row">
-  <%= branch %>
+  <a href="http://travis-ci.org/<%= slug %>/builds/<%= build.id %>"><%= branch %></a>
   <span class="sparkline">Loading..</span>
 </script>
 
