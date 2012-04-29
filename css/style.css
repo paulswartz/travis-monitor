@@ -9,16 +9,17 @@ html.localstorage #local-storage-alert {
 #projects th.delete-column {
     width: 2em;
 }
-#projects tr.red td.project strong,
+#projects tr.red td.project,
 #projects td.project .branches li.red {
-    color: red;
+    border-left: 5px solid red;
 }
-#projects tr.green td.project strong,
+#projects tr.green td.project,
 #projects td.project .branches li.green {
-    color: green;
+    border-left: 5px solid green;
 }
 #projects .branches li {
     margin: 5px 0;
+    padding-left: 10px;
 }
 #projects .branches li .sparkline {
     padding-left: 10px;
