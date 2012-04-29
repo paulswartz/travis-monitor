@@ -5,9 +5,10 @@ module("Monitor View", {
         this.collection.localStorage = new Store("qunit-monitor-view-test");
         this.projects = $("<div id='projects' />");
         this.input = $("<input type='text' id='new-project' />");
-        fixture = $("#qunit-fixture");
+        var fixture = $("#qunit-fixture");
         fixture.append(this.projects);
         fixture.append(this.input);
+        $("<a href='' id='refresh'>Refresh</a>").appendTo(fixture);
         $("<div id='no-projects' />").show().appendTo(fixture);
         this.app = new TravisMonitorView({
             collection: this.collection
@@ -49,4 +50,19 @@ test("No projects", 3, function () {
     equal($("#no-projects:visible").length, 0, "No projects ID hidden");
     project.destroy();
     ok($("#no-projects:visible").length, "No projects ID visible");
+});
+
+test('refresh', 3, function() {
+    var project = this.collection.create({
+        slug: 'rails/rails'
+    });
+    var that = this;
+    equal(project.get('builds'), null, 'no builds to start');
+    project.on('change:num_builds', function () {
+        start();
+        equal(project.get('num_builds'), 25, 'loaded some builds after click');
+        equal(that.app.refresh(), false, 'refresh function stops event handling');
+    });
+    $('#refresh').click();
+    stop();
 });

@@ -144,16 +144,17 @@ $(document).ready(function () {
     });
 
     var TravisMonitorView = Backbone.View.extend({
-        el: $('#container'),
+        el: $('body'),
         events: {
-            'keypress #new-project': 'addOnEnter'
+            'keypress #new-project': 'addOnEnter',
+            'click #refresh': 'refresh'
         },
         model: Project,
         view: ProjectView,
         collection: Projects,
         initialize: function() {
             _.bindAll(this, 'addProject', 'addAll', 'adjustCount',
-                      'addOnEnter');
+                      'addOnEnter', 'refresh');
             this.collection.bind('add', this.addProject);
             this.collection.bind('remove', this.adjustCount);
             this.collection.bind('reset', this.addAll);
@@ -187,6 +188,15 @@ $(document).ready(function () {
                     project.collection.add([project]);
                 });
             }
+        },
+        refresh: function (e) {
+            this.collection.each(function(project) {
+                project.loadFromTravis();
+            });
+            if (typeof e !== 'undefined') {
+                e.preventDefault();
+            }
+            return false;
         }
     });
 
