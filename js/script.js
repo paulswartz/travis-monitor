@@ -6,7 +6,7 @@
 
 $(document).ready(function () {
     "use strict";
-    var storePrefix = 'travis',
+    var storePrefix = 'travis-',
         urlPrefix = 'http://travis-ci.org',
         urlSuffix = '.json?callback=?';
     if (typeof QUnit !== 'undefined') {
