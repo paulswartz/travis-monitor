@@ -7,7 +7,7 @@
 $(document).ready(function () {
     "use strict";
     var storePrefix = 'travis-',
-        urlPrefix = 'http://travis-ci.org',
+        urlPrefix = 'http://travis-ci.org/',
         urlSuffix = '.json?callback=?';
     if (typeof QUnit !== 'undefined') {
         storePrefix = 'qunit-';
@@ -157,6 +157,7 @@ $(document).ready(function () {
         initialize: function() {
             _.bindAll(this, 'addProject', 'addAll', 'adjustCount',
                       'addOnEnter', 'refresh', 'finishRefresh');
+            $.ajaxSetup({cache: false});
             this.collection.bind('add', this.addProject);
             this.collection.bind('remove', this.adjustCount);
             this.collection.bind('reset', this.addAll);
