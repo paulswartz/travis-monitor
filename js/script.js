@@ -163,6 +163,7 @@ $(document).ready(function () {
             this.collection.bind('reset', this.addAll);
             this.collection.bind('change:last_updated', this.finishRefresh);
             this.input = $('#new-project');
+            this.refresh_link = $('#refresh');
             this.collection.fetch();
             this.collection.update();
         },
@@ -194,10 +195,12 @@ $(document).ready(function () {
             }
         },
         finishRefresh: function () {
-            $("#refresh").text('Refresh');
+            this.refresh_link.text('Refresh');
+            this.trigger('refresh:stop')
         },
         refresh: function (e) {
-            $('#refresh').text('Refreshing...');
+            this.trigger('refresh:start');
+            this.refresh_link.text('Refreshing...');
             this.collection.update();
             if (typeof e !== 'undefined') {
                 e.preventDefault();

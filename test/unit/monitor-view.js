@@ -57,15 +57,15 @@ $(document).ready(function() {
         var project = this.collection.create({
             slug: 'rails/rails'
         });
-        var that = this;
         equal(project.get('builds'), null, 'no builds to start');
-        project.on('change:last_updated', function () {
+        this.app.on('refresh:stop', function () {
+            this.off('refresh:stop');
             start();
             equal(project.get('num_builds'), 25, 'loaded some builds after click');
-            equal($('#refresh').text(), 'Refresh', 'button text updated on end');
-            equal(that.app.refresh(), false, 'refresh function stops event handling');
+            equal(this.refresh_link.text(), 'Refresh', 'button text updated on end');
+            equal(this.refresh(), false, 'refresh function stops event handling');
         });
-        equal($('#refresh').click().text(), 'Refreshing...', 'button text updated on start');
+        equal(this.app.refresh_link.click().text(), 'Refreshing...', 'button text updated on start');
         stop();
     });
 });
