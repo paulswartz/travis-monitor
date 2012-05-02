@@ -27,4 +27,11 @@ $(document).ready(function() {
         stop();
         this.collection.update();
     });
+
+    test("sort", 1, function() {
+        this.collection.create({slug: "rails/rails"});
+        this.collection.create({slug: "foo/bar"});
+        equal(this.collection.at(0).get('slug'), 'foo/bar',
+              'returned in insertion order, not slug order');
+    });
 });

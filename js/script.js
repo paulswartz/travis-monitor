@@ -78,6 +78,9 @@ $(document).ready(function () {
     var ProjectList = Backbone.Collection.extend({
         model: Project,
         localStorage: new Store(storePrefix + 'projects'),
+        comparator: function(project) {
+            return project.get('slug');
+        },
         update: function () {
             this.each(function (project) {
                 project.loadFromTravis(project);
